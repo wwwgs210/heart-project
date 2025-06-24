@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ハートマークのクリックアニメーション</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff00;
+            overflow: hidden;
+            position: relative;
+        }
+        .heart-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .heart {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            transition: fill 0.3s ease-in-out, transform 0.3s ease-in-out;
+            fill: none;
+            stroke: red;
+            stroke-width: 3;
+        }
+        .filled {
+            fill: red;
+            transform: scale(1.2);
+        }
+        .floating-heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            fill: red;
+            opacity: 0.8;
+            animation: floatUp 1.5s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-container">
+        <svg class="heart" viewBox="0 0 24 24" id="heartIcon">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+    </div>
+
+    <script>
+        // 音声ファイルを事前ロード
+        const clickSound = new Audio('https://www.dropbox.com/scl/fi/9vpeg7kaszeqkf78hqo17/.mp3?raw=1&rlkey=1q3x0g2k4j5v7z6y8f9b1c4d2&dl=0');
+        clickSound.preload = 'auto';
+
+        document.getElementById('heartIcon').addEventListener('click', function(event) {
+            this.classList.toggle('filled');
+            const heartContainer = document.querySelector('.heart-container');
+
+            // 音声再生（モバイルではユーザー操作必須なのでここで再生）
+            clickSound.currentTime = 0;
+            clickSound.play();
+
+            for (let i = 0; i < 5; i++) {
+                let heart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                heart.setAttribute("viewBox", "0 0 24 24");
+                heart.setAttribute("class", "floating-heart");
+                heart.style.position = "absolute";
+                heart.style.left = "50%";
+                heart.style.top = "0";
+                heart.style.transform = `translateX(${Math.random() * 40 - 20}px)`;
+                heart.innerHTML = '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="red" />';
+
+                heartContainer.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
